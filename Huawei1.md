@@ -1,6 +1,6 @@
 # 牛客网刷题笔记
 ## 序言和计划
-* 总题量：200
+* 总题量：108
 * 分布：
 
     | 难易度 | 数量 |
@@ -393,7 +393,7 @@ print(N_current)
 总体来说,这题的解法非常的巧妙,<font color = red>对数列的观察比思考出合理的算法更加重要</font>
 
 ------
-## Day 2
+## DAY 2
 
 ### Q9: 表达式求值
 题目描述:
@@ -733,8 +733,673 @@ while True:
 
 $$\begin{cases}   
 5x + 3y + \frac{1}{3}z = 100 \\
-x+y+z=100 \\
+x+y+z=100
 \end{cases}
 (x,y,z\in N)$$
 
 求x,y,z所有整数解得组合
+
+----
+## DAY 3
+### Q15: 日期转换天数
+题目描述:
+```
+根据输入的日期，计算是这一年的第几天。。
+测试用例有多组，注意循环输入
+```
+
+输入
+```
+输入多行，每行空格分割，分别是年，月，日
+```
+
+输出
+```
+成功:返回outDay输出计算后的第几天;
+失败:返回-1
+```
+
+我的答案:
+```python
+while True:
+    try:
+        year, month, day = input().split(' ')
+        year = int(year)
+        month = int(month)
+        day = int(day)
+        leapflag = False
+        if year%4 == 0 and year%100 != 0:
+            leapflag = True
+        if month > 12 or day > 31:
+            print(-1)
+            break
+        elif month in [4,6,9,11] and day > 30:
+            print(-1)
+            break
+        elif month in [1,3,5,7,8,10,12] and day > 31:
+            print(-1)
+            break
+        elif month == 2:
+            if leapflag == True and day > 29:
+                print(-1)
+                break
+            elif leapflag == False and day > 28:
+                print(-1)
+                break
+        month_list = [31,28,31,30,31,30,31,31,30,31,30,31]
+        actual_day = sum(month_list[0:month - 1]) + day
+        if leapflag == True:
+            print(actual_day + 1)
+        else:
+            print(actual_day)
+    except:
+        print(-1)
+        break
+```
+
+别人的答案:
+```python
+while True:
+    try:
+        y,m,d = map(int, input().split())
+        month = [31,28,31,30,31,30,31,31,30,31,30,31]
+        days = sum(month[:(m-1)])+d
+        if m >2 and (y % 4 ==0 and y%100 !=0 or y%400 ==0):
+            days +=1
+        print(days)
+    except:
+        break
+```
+
+**解题思路**
+   1. 判断闰年,如果是闰年则天数加1.
+   2. 还需判断输入是否合法,但讨论区的代码并没有加入这个功能,说明测试集中的日期都是符合格式且正常的
+~~本题过于基础确实没什么好写的~~
+
+----
+
+### Q16: 参数解析
+题目描述:
+```
+在命令行输入如下命令：
+xcopy /s c:\ d:\，
+各个参数如下： 
+参数1：命令字xcopy 
+参数2：字符串/s
+参数3：字符串c:\
+参数4: 字符串d:\
+请编写一个参数解析程序，实现将命令行各个参数解析出来。
+ 
+解析规则： 
+1.参数分隔符为空格 
+2.对于用“”包含起来的参数，如果中间有空格，不能解析为多个参数。比如在命令行输入xcopy /s “C:\program files” “d:\”时，参数仍然是4个，第3个参数应该是字符串C:\program files，而不是C:\program，注意输出参数时，需要将“”去掉，引号不存在嵌套情况。
+3.参数不定长 
+4.输入由用例保证，不会出现不符合要求的输入 
+```
+
+输入:
+```
+输入一行字符串，可以有空格
+```
+
+输出:
+```
+输出参数个数，分解后的参数，每个参数都独占一行
+```
+
+我的答案:
+```python
+while True:
+    try:
+        s = input().split(' ')
+        print(len(s))
+        for cmd in s:
+            print(cmd)
+    except:
+        break
+```
+
+思路:~~过于基础没什么好说的了~~
+
+----
+
+### Q17: 寻找最大公共字符串长度
+
+题目描述:
+```
+题目标题：
+计算两个字符串的最大公共字串的长度，字符不区分大小写
+详细描述：
+接口说明
+原型：
+int getCommonStrLength(char * pFirstStr, char * pSecondStr);
+输入参数：
+     char * pFirstStr //第一个字符串
+     char * pSecondStr//第二个字符串
+```
+
+输入:
+```
+输入两个字符串
+```
+
+输出:
+```
+输出一个整数
+```
+
+我的答案:
+```python
+while True:
+    try:
+        s1 = input().lower()
+        s2 = input().lower()
+        max_length = 0
+        for i in range(len(s1)):
+            for j in range(len(s2)):
+                word = s1[i: i+j+1]
+                if word in s2 and len(word) > max_length:
+                    max_length = len(word)
+        print(max_length)
+    except:
+        break
+```
+
+思路:
+
+**1.因为不区分大小写,所以在匹配之前应该全部转换为统一的大写或者小写**
+2.遍历两个字符串, 记录每次尝试匹配的字符串长度+1,知道找到最大值
+
+-----
+### Q18: 尼科彻斯定理
+
+题目描述:
+```
+验证尼科彻斯定理，即：任何一个整数m的立方都可以写成m个连续奇数之和。
+例如：
+1^3=1
+2^3=3+5
+3^3=7+9+11
+4^3=13+15+17+19
+输入一个正整数m（m≤100），将m的立方写成m个连续奇数之和的形式输出。
+本题含有多组输入数据。
+```
+
+输入:
+```
+一个整数
+```
+
+输出:
+```
+一个表达式字符串
+```
+
+我的答案:
+```python
+while True:
+    try:
+        m = int(input())
+        x0 = str(m *(m - 1) + 1)
+        out_list = [x0]
+        for i in range(1,m):
+            out_list.append(str(int(x0) + 2*i))
+        print('+'.join(out_list))
+    except:
+        break
+```
+
+思路:
+1. 关键在找到多项式的规律,直接将数学表达式写出来就行了
+
+-----
+
+### Q18: 二维数组操作判断
+
+题目描述:
+```
+有一个数据表格为二维数组（数组元素为int类型），行长度为ROW_LENGTH,列长度为COLUMN_LENGTH。对该表格中数据的操作可以在单个单元内，也可以对一个整行或整列进行操作，操作包括交换两个单元中的数据；插入某些行或列。
+请编写程序，判断对表格的各种操作是否合法。
+详细要求:
+
+1.数据表规格的表示方式为“行*列”, 数据表元素的位置表示方式为[行,列]，行列均从0开始编号
+2.数据表的最大规格为9行*9列，对表格进行操作时遇到超出规格应该返回错误
+3.插入操作时，对m*n表格，插入行号只允许0~m，插入列号只允许0~n。超出范围应该返回错误
+4.只需记录初始表格中数据的变化轨迹，查询超出初始表格的数据应返回错误
+例如:  初始表格为4*4，可查询的元素范围为[0,0]~[3,3]，假设插入了第2行，数组变为5*4，查询元素[4,0]时应该返回错误
+```
+输入:
+```
+输入数据按下列顺序输入：
+1 表格的行列值
+2 要交换的两个单元格的行列值
+3 输入要插入的行的数值
+4 输入要插入的列的数值
+5 输入要获取运动轨迹的单元格的值
+```
+
+输出:
+```
+输出按下列顺序输出：
+1 初始化表格是否成功，若成功则返回0， 否则返回-1
+2 输出交换单元格是否成功
+3 输出插入行是否成功
+4 输出插入列是否成功
+5 输出要查询的运动轨迹的单元查询是否成功
+```
+
+我的答案:
+```python
+while True:
+    try:
+        row, col = map(int, input().split(' '))
+        if row > 9 or row < 0 or col > 9 or col < 0:
+            print(-1)
+        else:
+            print(0)
+        swap_row1, swap_col1, swap_row2, swap_col2 = map(int, input().split(' '))
+        if swap_row1 >= row or swap_row2 >= row or swap_col1 >= col or swap_col2 >= col:
+            print(-1)
+        elif swap_row1 == swap_row2 and swap_col1 == swap_col2:
+            print(-1)
+        else:
+            print(0)
+        insert_row = int(input())
+        if insert_row >= row or insert_row < 0 or row + 1 > 9:
+            print(-1)
+        else:
+            print(0)
+        insert_col = int(input())
+        if insert_col >= col or insert_col < 0 or col + 1 > 9:
+            print(-1)
+        else:
+            print(0)
+        trace_row, trace_col = map(int, input().split(' '))
+        if trace_row >= row or trace_col >= col:
+            print(-1)
+        else:
+            print(0)
+    except:
+        break
+```
+
+思路:
+~~没什么思路按照题目描述硬做出来就行了~~
+
+-----
+### Q19: 统计大写字母个数
+
+题目描述:
+```
+找出给定字符串中大写字符(即'A'-'Z')的个数
+接口说明
+原型：int CalcCapital(String str);
+返回值：int
+```
+
+输入:
+```
+输入一个String数据
+```
+
+输出:
+```
+输出string中大写字母的个数
+```
+
+我的答案:
+```python
+while True:
+    try:
+        s = str(input())
+        n = 0
+        for i in s:
+            if i.isupper() is True:
+                n += 1
+        print(n)
+    except:
+        break
+```
+
+思路:
+比较基础,python的字符操作还是非常方便的,有下面几个常用的函数可以参考:
+函数   | 功能
+:----|:----
+字符串.isalnum() | 所有字符都是数字或者字母，为真返回 Ture，否则返回 False。 
+字符串.isalpha()  | 所有字符都是字母，为真返回 Ture，否则返回 False。 
+字符串.isdigit()   |  所有字符都是数字，为真返回 Ture，否则返回 False。 
+字符串.islower()   | 所有字符都是小写，为真返回 Ture，否则返回 False。 
+字符串.isupper()  | 所有字符都是大写，为真返回 Ture，否则返回 False。 
+字符串.istitle()   |   所有单词都是首字母大写，为真返回 Ture，否则返回 False。 
+字符串.isspace()  | 所有字符都是空白字符，为真返回 Ture，否则返回 False。
+
+----
+
+### Q20: 寻找最长回文子串的长度
+题目描述:
+```
+Catcher 是MCA国的情报员，他工作时发现敌国会用一些对称的密码进行通信，比如像这些ABBA，ABA，A，123321，但是他们有时会在开始或结束时加入一些无关的字符以防止别国破解。比如进行下列变化 ABBA->12ABBA,ABA->ABAKK,123321->51233214　。因为截获的串太长了，而且存在多种可能的情况（abaaab可看作是aba,或baaab的加密形式），Cathcer的工作量实在是太大了，他只能向电脑高手求助，你能帮Catcher找出最长的有效密码串吗？
+（注意：记得加上while处理多个测试用例）
+```
+
+输入:
+```
+一个字符串
+```
+
+输出:
+```
+字符串内含有最长回文(密码)的长度
+```
+
+我的答案:
+```python
+def solution(s):
+    if s==s[::-1]: #如果整个字符串都是回文则不用进行遍历,直接输出字符串的长度,不浪费时间
+        return len(s)
+    m = 0
+    #初始化最长回文长度为0
+    for i in range(len(s)):
+    #从第一个字符开始遍历字符串
+        if i-m>=1 and s[i-m-1:i+1]==s[i-m-1:i+1][::-1]:
+        #判断目前将要判定字符串是奇数长度还是偶数长度,分别进行判断
+            m+=2
+        if i-m>=0 and s[i-m:i+1]==s[i-m:i+1][::-1]:
+            m+=1
+    return m
+while True:
+    try:
+        s = str(input())
+        if s: #如果s为空,则不输出!!!!(这里有坑)
+            print(solution(s))
+    except:
+        break
+```
+
+思路:
+题目描述看起来复杂,但是本质上就是寻找字符串中所包含的**最长的回文的长度**
+基础部分--每增加一个字母,回文最大长度只可能+1(奇对称)或者+2(偶对称)
+因此,从头扫描字符串,以每个字符串开头分别增加新的字符, 判断增加字符后的内容是否为回文, 如果目前其长度为奇数(i - m) = 1, 则+2, 反之+1
+
+### Q21: 求最大连续bit数
+题目描述:
+```
+功能: 求一个byte数字对应的二进制数字中1的最大连续数，例如3的二进制为00000011，最大连续2个1 
+输入: 一个byte型的数字   
+输出: 无     
+返回: 对应的二进制数字中1的最大连续数
+```
+
+输入:
+```
+一个byte数
+```
+
+输出:
+```
+数的二进制中最长连续'1'的个数
+```
+
+我的答案:
+```python
+while True:
+    try:
+        num = int(input())
+        binum = bin(num)
+        s = str(binum)
+        m = 0
+        for i in range(len(s)):
+            if '1' * i in s and i > m:
+                m = i
+        print(m)
+    except:
+        break
+```
+
+思路:
+遍历一长度为i的'1'的字符串在数中是否存在,i的最大值为数值二进制的长度
+
+----
+### Q22: 密码强度等级
+
+题目描述:
+```
+密码按如下规则进行计分，并根据不同的得分为密码进行安全等级划分。
+一、密码长度:
+5 分: 小于等于4 个字符
+10 分: 5 到7 字符
+25 分: 大于等于8 个字符
+二、字母:
+0 分: 没有字母
+10 分: 全都是小（大）写字母
+20 分: 大小写混合字母
+三、数字:
+0 分: 没有数字
+10 分: 1 个数字
+20 分: 大于1 个数字
+四、符号:
+0 分: 没有符号
+10 分: 1 个符号
+25 分: 大于1 个符号
+五、奖励:
+2 分: 字母和数字
+3 分: 字母、数字和符号
+5 分: 大小写字母、数字和符号
+最后的评分标准:
+>= 90: 非常安全
+>= 80: 安全（Secure）
+>= 70: 非常强
+>= 60: 强（Strong）
+>= 50: 一般（Average）
+>= 25: 弱（Weak）
+>= 0:  非常弱
+
+对应输出为：
+VERY_SECURE
+
+SECURE,
+
+VERY_STRONG,
+
+STRONG,
+
+AVERAGE,
+
+WEAK,
+
+VERY_WEAK,
+
+
+请根据输入的密码字符串，进行安全评定。
+注：
+字母：a-z, A-Z
+数字：-9
+符号包含如下： (ASCII码表可以在UltraEdit的菜单view->ASCII Table查看)
+!"#$%&'()*+,-./     (ASCII码：x21~0x2F)
+:;<=>?@             (ASCII<=><=><=><=><=>码：x3A~0x40)
+[\]^_`              (ASCII码：x5B~0x60)
+{|}~                (ASCII码：x7B~0x7E)
+接口描述：
+
+Input Param 
+String pPasswordStr:    密码，以字符串方式存放。
+Return Value
+根据规则评定的安全等级。
+
+
+public static Safelevel GetPwdSecurityLevel(String pPasswordStr)
+{
+/*在这里实现功能*/
+return null;
+}
+```
+
+输入:
+```
+一个字符串
+```
+
+输出:
+```
+打印密码等级
+```
+
+我的答案:
+```python
+def strnum(s):
+    DigitNum = 0
+    UpperNum = 0
+    LowerNum = 0
+    OtherNum = 0
+    for i in s:
+        if i.isdigit():
+            DigitNum = DigitNum + 1
+        elif i.isalpha() and i.isupper():
+            UpperNum += 1
+        elif i.isalpha() and i.islower():
+            LowerNum += 1
+        else:
+            OtherNum += 1
+    return (DigitNum, UpperNum, LowerNum, OtherNum)
+
+def secure_score(s):
+    score = 0
+    #score for length
+    if len(s) <= 4:
+        len_score = 5
+    elif len(s) >= 8:
+        len_score = 25
+    else:
+        len_score = 10
+    
+    DigitNum, UpperNum, LowerNum, OtherNum = strnum(s)
+    
+    #score for letter
+    if UpperNum + LowerNum == 0:
+        letter_score = 0
+    elif UpperNum == 0 or LowerNum == 0:
+        letter_score = 10
+    else:
+        letter_score = 20
+    
+    #score for digit
+    if DigitNum == 0:
+        digit_score = 0
+    elif DigitNum == 1:
+        digit_score = 10
+    else:
+        digit_score = 20
+    
+    #score for others
+    if OtherNum == 0:
+        other_score = 0
+    elif OtherNum == 1:
+        other_score = 10
+    else:
+        other_score = 25
+    
+    #extra score
+    if DigitNum != 0 and UpperNum != 0 and LowerNum != 0 and OtherNum != 0:
+        extra_score = 5
+    elif DigitNum != 0 and UpperNum != 0 and LowerNum == 0 and OtherNum != 0:
+        extra_score = 3
+    elif DigitNum != 0 and UpperNum == 0 and LowerNum != 0 and OtherNum != 0:
+        extra_score = 3
+    elif DigitNum != 0 and UpperNum + LowerNum != 0 and OtherNum == 0:
+        extra_score = 2
+    else:
+        extra_score = 0
+    total_score = len_score + letter_score + digit_score + other_score + extra_score
+    return (total_score)
+
+while True:
+    try:
+        password = str(input())
+        score = secure_score(password)
+        if score >= 90:
+            print('VERY_SECURE')
+        elif score >= 80 and score <90:
+            print('SECURE')
+        elif score >=70 and score <80:
+            print('VERY_STRONG')
+        elif score >= 60 and score <70:
+            print('STRONG')
+        elif score >= 50 and score <60:
+            print('AVERAGE')
+        elif score >= 25 and score <50:
+            print('WEAK')
+        else:
+            print('VERY_WEAK')
+    except:
+        break
+```
+
+别人的答案:
+```python
+while True:
+    try:
+        str_data = input().strip()
+        num, up_char, low_char, other, score = 0, 0, 0, 0, 0
+
+        for data in str_data:
+            if data.isdigit():
+                num += 1
+            elif data.isalpha():
+                if data.lower() == data:
+                    low_char += 1
+                else:
+                    up_char += 1
+            else:
+                other += 1
+        if len(str_data) < 5:
+            score += 5
+        elif len(str_data) < 8:
+            score += 10
+        else:
+            score += 25
+        if up_char==0 and low_char==0:
+            pass
+        elif (up_char==0 and low_char!=0) or (up_char!=0 and low_char==0):
+            score += 10
+        else:
+            score += 20
+        if num == 0:
+            pass
+        elif num == 1:
+            score += 10
+        else:
+            score += 20
+        if other == 0:
+            pass
+        elif other == 1:
+            score += 10
+        else:
+            score += 25
+        if num != 0 and (up_char+low_char) != 0 and other==0:
+            score += 2
+        elif num != 0 and up_char != 0 and low_char != 0 and other!=0:
+            score += 5
+        elif num != 0 and (up_char+low_char) != 0 and other!=0:
+            score += 3
+        if score >=90:
+            print('VERY_SECURE')
+        elif score >=80:
+            print('SECURE')
+        elif score >= 70:
+            print('VERY_STRONG')
+        elif score >= 60:
+            print('STRONG')
+        elif score >= 50:
+            print('AVERAGE')
+        elif  score>=25:
+            print('WEAK')
+        else:
+            print('VERY_WEAK')
+    except:
+        break
+```
+
+思路:
+没什么技巧,硬分类就行了
+
+-----
