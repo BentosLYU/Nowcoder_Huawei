@@ -1687,7 +1687,7 @@ while True:
 ----
 
 ## DAY 5
-### 提取不重复的整数
+### Q29: 提取不重复的整数
 
 题目描述:
 ```
@@ -1729,3 +1729,353 @@ print("".join(sorted(set(a),key=a.index)))
 
 思路:
 用到了python中的`set()`函数来进行去重, 效率更高, 但需要注意的是, 直接使用set()函数会改变列表的顺序,所以还要使用`sorted()`函数来重新排列
+
+----
+
+### Q30: 字符个数统计
+
+问题描述:
+```
+编写一个函数，计算字符串中含有的不同字符的个数。字符在ACSII码范围内(0~127)，换行表示结束符，不算在字符里。不在范围内的不作统计。多个相同的字符只计算一次
+例如，对于字符串abaca而言，有a、b、c三种不同的字符，因此输出3。
+```
+
+输入:
+```
+输入N个字符，字符在ACSII码范围内。
+```
+
+输出:
+```
+输出范围在(0~127)字符的个数。
+```
+
+我的答案:
+```python
+while True:
+    try:
+        s = str(input())
+        n = 0
+        for i in set(s):
+            if ord(i) >= 0 and ord(i) <= 127:
+                n += 1
+        print(n)
+    except:
+        break
+```
+
+思路：
+
+按照题目描述直接写就可以了，但是好像测试用例并没有限定好ASCII码的值，所以不用判定0～127也可以通过检测,但那样实在是太过于取巧了
+
+别人的代码:
+```python
+line = input().strip()
+indexes = set()
+for i in line:
+    if 0 <= ord(i) <= 127:
+        indexes.add(i)
+print(len(indexes))
+```
+
+思路:
+大体上没有区别
+
+-----
+### Q31: 字符串排序
+问题描述:
+```
+给定n个字符串，请对n个字符串按照字典序排列。
+```
+
+输入:
+```
+输入第一行为一个正整数n(1≤n≤1000),下面n行为n个字符串(字符串长度≤100),字符串中只含有大小写字母。
+```
+
+输出:
+```
+数据输出n行，输出结果为按照字典序排列的字符串。
+```
+
+我的答案:
+```python
+while True:
+    try:
+        N = int(input())
+        word_list = []
+        for i in range(N):
+            word_list.append(str(input()))
+        word_list.sort()
+        for i in word_list:
+            print(i, end = '\n')
+    except:
+        break
+```
+
+思路:
+保存输入的单词作为list, 然后对list进行排序
+
+-----
+
+### Q32: 简单密码破解
+题目描述:
+```
+密码是我们生活中非常重要的东东，我们的那么一点不能说的秘密就全靠它了。哇哈哈. 接下来渊子要在密码之上再加一套密码，虽然简单但也安全。
+ 
+假设渊子原来一个BBS上的密码为zvbo9441987,为了方便记忆，他通过一种算法把这个密码变换成YUANzhi1987，这个密码是他的名字和出生年份，怎么忘都忘不了，而且可以明目张胆地放在显眼的地方而不被别人知道真正的密码。
+ 
+他是这么变换的，大家都知道手机上的字母： 1--1， abc--2, def--3, ghi--4, jkl--5, mno--6, pqrs--7, tuv--8 wxyz--9, 0--0,就这么简单，渊子把密码中出现的小写字母都变成对应的数字，数字和其他的符号都不做变换，
+ 
+声明：密码中没有空格，而密码中出现的大写字母则变成小写之后往后移一位，如：X，先变成小写，再往后移一位，不就是y了嘛，简单吧。记住，z往后移是a哦。
+```
+
+输入:
+```
+输入包括多个测试数据。输入是一个明文，密码长度不超过100个字符，输入直到文件结尾
+```
+
+输出:
+```
+输出渊子真正的密文
+```
+
+我的答案:
+```python
+def low_letter(s):
+    num_dic = {'1':1,
+                'abc':2,
+                'def':3,
+                'ghi':4,
+                'jkl':5,
+                'mno':6,
+                'pqrs':7,
+                'tuv':8,
+                'wxyz':9,
+                '0':0
+                }
+    for k in num_dic.keys():
+        if s in k:
+            return num_dic[k]
+        
+def upper_letter(s):
+    if s != 'Z':
+        return chr(ord(s)+33)
+    else:
+        return 'a'
+    
+while True:
+    try:
+        password = str(input())
+        conver_password = ''
+        for i in password:
+            if i.islower():
+                conver_password += str(low_letter(i))
+            elif i.isupper():
+                conver_password += str(upper_letter(i))
+            elif i.isdigit():
+                conver_password += str(i)
+        print(conver_password)
+    except:
+        break
+```
+
+思路:
+
+比较直接,创建一个密码本对应小写字母,另一个大写字母则利用ASCII编码进行转换,*除了Z比较特殊,它对应的输出为a*,数字不做转换但是要作为`str`添加到转换好的字符串上
+
+别人的答案:
+```python
+while True:
+    try:
+        string=input()
+        encoder=[]
+        for c in string:
+            if c.islower():
+                if c in 'abc':
+                    encoder.append('2')
+                elif c in 'def':
+                    encoder.append('3')
+                elif c in 'ghi':
+                    encoder.append('4')
+                elif c in 'jkl':
+                    encoder.append('5')
+                elif c in 'mno':
+                    encoder.append('6')
+                elif c in 'pqrs':
+                    encoder.append('7')
+                elif c in 'tuv':
+                    encoder.append('8')
+                elif c in 'wxyz':
+                    encoder.append('9')
+            elif c.isupper():
+                if c=='Z':
+                    encoder.append('a')
+                else:
+                    encoder.append(chr(ord(c.lower())+1))
+            else:
+                encoder.append(c)
+        print(''.join(encoder))
+    except:
+       break
+```
+
+思路相仿,只不过他没有重新编写新的function来处理,主函数显得太过冗长且易读性比较差.
+
+----
+
+### Q33: 字符串排序
+
+问题描述:
+```
+编写一个程序，将输入字符串中的字符按如下规则排序。
+
+规则 1 ：英文字母从 A 到 Z 排列，不区分大小写。
+
+如，输入： Type 输出： epTy
+
+规则 2 ：同一个英文字母的大小写同时存在时，按照输入顺序排列。
+
+如，输入： BabA 输出： aABb
+
+规则 3 ：非英文字母的其它字符保持原来的位置。
+
+如，输入： By?e 输出： Be?y
+```
+
+输入:
+```
+输入字符串
+```
+
+输出:
+```
+输出字符串
+```
+
+我的答案:
+```python
+while True:
+    try:
+        s = str(input())
+        temp = [False] * len(s)
+        char_list = []
+        for i, v in enumerate(s):
+            if v.isalpha():
+                char_list.append(v)
+            else:
+                temp[i] = v
+        char_list.sort(key = lambda c: c.lower())
+        for i, v in enumerate(temp):
+            if not v:
+                temp[i] = char_list[0]
+                char_list.pop(0)
+        print(''.join(temp))
+    except:
+        break
+```
+思路:
+
+关键点在于保存好非字母的其他字符的位置(包括空格), 方法是根据字符类型创建一个布尔值的列表,循环遍历插入保存好的非字母字符
+而对于字母字符的排序则没有特别的地方,大小写一视同仁同时转换为小写再进行排序就可以做到题目的要求
+
+----
+
+### Q34: 图片整理
+题目描述:
+```
+Lily上课时使用字母数字图片教小朋友们学习英语单词，每次都需要把这些图片按照大小（ASCII码值从小到大）排列收好。请大家给Lily帮忙，通过C语言解决。
+本题含有多组样例输入。
+```
+
+输入:
+```
+Lily使用的图片包括"A"到"Z"、"a"到"z"、"0"到"9"。输入字母或数字个数不超过1024。
+```
+
+输出:
+```
+Lily的所有图片按照从小到大的顺序输出
+```
+
+我的答案:
+```python
+while True:
+    try:
+        s = str(input())
+        l = list(s)
+        l.sort()
+        print(''.join(l))    
+    except:
+        break
+```
+
+过于简单不过多赘述~~实际上可以一行写完~~
+
+----
+### Q35:射型矩阵
+
+题目描述:
+```
+蛇形矩阵是由1开始的自然数依次排列成的一个矩阵上三角形。
+例如，当输入5时，应该输出的三角形为：
+1 3 6 10 15
+2 5 9 14
+4 8 13
+7 12
+11
+
+请注意本题含有多组样例输入。
+```
+
+输入:
+```
+输入正整数N（N不大于100）
+```
+
+输出:
+```
+输出一个N行的蛇形矩阵。
+```
+
+我的答案:
+```python
+while True:
+    try:
+        N = int(input())
+        first_num = 1
+        i = 1
+        while i <= N:
+            current = []
+            iter_num = first_num
+            step = i + 1
+            for j in range(N-i+1):
+                current.append(str(iter_num))
+                iter_num += step
+                step += 1
+            i = i + 1
+            first_num += i - 1 
+            print(' '.join(current))
+    except:
+        break
+```
+
+思路:
+平铺直叙,没什么技巧,但是直觉上感受到有些变量设置得有些冗余,还有改进的空间
+
+别人的答案:
+```python
+while True:
+    try:
+        num = int(input())
+        for i in range(num):
+            if i == 0:
+                res = [(x+2)*(x+1)//2 for x in range(num)] #优雅
+            else:
+                res = [x - 1 for x in res[1:]]
+            print(' '.join(map(str, res)))
+    except:
+        break
+```
+
+别人的答案灵活运用的数组的操作,值得学习
